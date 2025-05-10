@@ -1,4 +1,5 @@
 import random
+import numpy
 
 def arithmetic_crossover(parent1, parent2):
     alpha = random.random()
@@ -45,3 +46,73 @@ def averaging_crossover(parent1, parent2):
     child1 = [(p1 + p2) / 2 for p1, p2 in zip(parent1, parent2)]
     child2 = [(p1 + p2) / 2 for p1, p2 in zip(parent1, parent2)]
     return child1, child2
+
+def custom_arithmetic_crossover(parents, offspring_size, ga_instance):
+    offspring = []
+    for k in range(0, offspring_size[0], 2):
+        if k + 1 < offspring_size[0]:
+            parent1 = parents[k % parents.shape[0], :].copy()
+            parent2 = parents[(k + 1) % parents.shape[0], :].copy()
+            child1, child2 = arithmetic_crossover(parent1, parent2)
+            offspring.append(child1)
+            offspring.append(child2)
+        else:
+            offspring.append(parents[k % parents.shape[0], :].copy())
+    return numpy.array(offspring)
+
+
+def custom_linear_crossover(parents, offspring_size, ga_instance):
+    offspring = []
+    for k in range(0, offspring_size[0], 2):
+        if k + 1 < offspring_size[0]:
+            parent1 = parents[k % parents.shape[0], :].copy()
+            parent2 = parents[(k + 1) % parents.shape[0], :].copy()
+            child1, child2 = linear_crossover(parent1, parent2)
+            offspring.append(child1)
+            if len(offspring) < offspring_size[0]:
+                offspring.append(child2)
+        else:
+            offspring.append(parents[k % parents.shape[0], :].copy())
+    return numpy.array(offspring)
+
+
+def custom_blend_alpha_crossover(parents, offspring_size, ga_instance):
+    offspring = []
+    for k in range(0, offspring_size[0], 2):
+        if k + 1 < offspring_size[0]:
+            parent1 = parents[k % parents.shape[0], :].copy()
+            parent2 = parents[(k + 1) % parents.shape[0], :].copy()
+            child1, child2 = blend_alpha_crossover(parent1, parent2)
+            offspring.append(child1)
+            offspring.append(child2)
+        else:
+            offspring.append(parents[k % parents.shape[0], :].copy())
+    return numpy.array(offspring)
+
+
+def custom_blend_alpha_beta_crossover(parents, offspring_size, ga_instance):
+    offspring = []
+    for k in range(0, offspring_size[0], 2):
+        if k + 1 < offspring_size[0]:
+            parent1 = parents[k % parents.shape[0], :].copy()
+            parent2 = parents[(k + 1) % parents.shape[0], :].copy()
+            child1, child2 = blend_alpha_beta_crossover(parent1, parent2)
+            offspring.append(child1)
+            offspring.append(child2)
+        else:
+            offspring.append(parents[k % parents.shape[0], :].copy())
+    return numpy.array(offspring)
+
+
+def custom_averaging_crossover(parents, offspring_size, ga_instance):
+    offspring = []
+    for k in range(0, offspring_size[0], 2):
+        if k + 1 < offspring_size[0]:
+            parent1 = parents[k % parents.shape[0], :].copy()
+            parent2 = parents[(k + 1) % parents.shape[0], :].copy()
+            child1, child2 = averaging_crossover(parent1, parent2)
+            offspring.append(child1)
+            offspring.append(child2)
+        else:
+            offspring.append(parents[k % parents.shape[0], :].copy())
+    return numpy.array(offspring)
