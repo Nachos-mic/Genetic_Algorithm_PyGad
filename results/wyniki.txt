@@ -1,0 +1,25 @@
+Najlepsze rozwiązanie: [4.8754751  4.96517464]
+Wartość funkcji celu: 0.010867398328843706
+Czas wykonania: 0.3873555660247803 sekund
+
+==================================================
+Najlepsze rozwiązanie: [5. 5.]
+Wartość funkcji celu: 1.0294634813134204e-27
+Czas wykonania: 0.31444334983825684 sekund
+
+==================================================
+Najlepsze rozwiązanie: [5. 5.]
+Wartość funkcji celu: 5.4284969138300686e-18
+Czas wykonania: 0.29752445220947266 sekund
+
+==================================================
+Najlepsze rozwiązanie: [4.9908692  4.97877221]
+Wartość funkcji celu: 0.00024874221380210464
+Czas wykonania: 0.4554452896118164 sekund
+
+==================================================
+Najlepsze rozwiązanie: [4.999924   4.99990567]
+Wartość funkcji celu: 3.559498157746212e-09
+Czas wykonania: 0.4338092803955078 sekund
+
+==================================================
