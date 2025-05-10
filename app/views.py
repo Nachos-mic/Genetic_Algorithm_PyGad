@@ -199,8 +199,6 @@ class MainWindow(Singleton):
 
     def run_algorithm(self):
         try:
-            from config import config
-
             config.chromosome_representation = self.chr_impl_var.get().lower()
             config.range_start = float(self.range_start_entry.get())
             config.range_end = float(self.range_end_entry.get())
@@ -222,7 +220,8 @@ class MainWindow(Singleton):
             results = f"Najlepsze rozwiązanie: {best_solution.chromosome_values}\nWartość funkcji celu: {best_solution.fitness}\nCzas wykonania: {execution_time} sekund\n"
 
             self.save_results_to_file(results)
-            
+
+            plotter.show_results_window(best_solution, execution_time)
             
         except Exception as e:
             print(f"Błąd: {str(e)}")

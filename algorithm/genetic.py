@@ -4,6 +4,7 @@ import numpy
 import benchmark_functions as bf
 import time
 from app.config import config
+from app.plotter import Plotter
 from algorithm.crossover import (custom_arithmetic_crossover,custom_blend_alpha_crossover,
                                  custom_blend_alpha_beta_crossover,custom_averaging_crossover,custom_linear_crossover)
 from algorithm.mutation import custom_uniform_mutation, custom_gaussian_mutation
@@ -81,6 +82,7 @@ def run_genetic_algorithm():
 
     start_time = time.time()
 
+    plotter = Plotter()
 
     num_generations = config.epochs
     sol_per_pop = config.population_size
@@ -107,6 +109,34 @@ def run_genetic_algorithm():
 
         if config.mutation_method in mutation_functions:
             mutation_type = mutation_functions[config.mutation_method]
+
+    def on_generation(ga_instance):
+        ga_instance.logger.info("Generation = {generation}".format(generation=ga_instance.generations_completed))
+        solution, solution_fitness, solution_idx = ga_instance.best_solution(
+            pop_fitness=ga_instance.last_generation_fitness)
+
+        if config.optimization_type == "min":
+            fitness_value = 1. / solution_fitness
+        else:
+            fitness_value = solution_fitness
+
+        ga_instance.logger.info("Best = {fitness}".format(fitness=fitness_value))
+        ga_instance.logger.info("Individual = {solution}".format(solution=repr(solution)))
+
+        if config.optimization_type == "min":
+            tmp = [1. / x for x in ga_instance.last_generation_fitness]
+        else:
+            tmp = ga_instance.last_generation_fitness
+
+        avg_fitness = numpy.average(tmp)
+
+        plotter.update_history(fitness_value, avg_fitness)
+
+        ga_instance.logger.info("Min = {min}".format(min=numpy.min(tmp)))
+        ga_instance.logger.info("Max = {max}".format(max=numpy.max(tmp)))
+        ga_instance.logger.info("Average = {average}".format(average=avg_fitness))
+        ga_instance.logger.info("Std = {std}".format(std=numpy.std(tmp)))
+        ga_instance.logger.info("\r\n")
 
     ga_instance = pygad.GA(
         num_generations=num_generations,
@@ -146,8 +176,7 @@ def run_genetic_algorithm():
 
     best_solution = GeneticSolution(solution, fitness_value)
 
-    plotter = None
-
     return best_solution, execution_time, plotter
+
 
 
