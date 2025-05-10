@@ -1,8 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import filedialog
 from config import config
-from genetic import run_genetic_algorithm
+from algorithm.genetic import run_genetic_algorithm
 import os
 
 
@@ -21,10 +20,10 @@ class MainWindow(Singleton):
         self.root.title("Genetic Algorithm (PyGAD)")
         self.root.geometry("300x385")
 
-        self.chromosome_implementation = ["Real", "Bit"]
+        self.chromosome_implementation = ["Real", "Binary"]
         self.selection_methods = ["Best", "Roulette", "Tournament"]
-        self.bit_cross_methods = ["single_point", "Two_point", "Uniform"]
-        self.bit_mutation_methods = ["single_point", "Two_point", "Edge"]
+        self.binary_cross_methods = ["single_point", "Two_point", "Uniform"]
+        self.binary_mutation_methods = ["single_point", "Two_point", "Edge"]
         self.real_cross_methods = ["arithmetic", "linear", "blend_alpha", "blend_alpha_beta", "averaging"]
         self.real_mutation_methods = ["uniform", "gaussian"]
 
@@ -172,10 +171,10 @@ class MainWindow(Singleton):
     def update_cross_mutation_methods(self, event=None):
         selected_impl = self.chr_impl_var.get()
 
-        if selected_impl == "Bit":
-            self.cross_methods = self.bit_cross_methods
-            self.mutation_methods = self.bit_mutation_methods
-        else:  # "Real"
+        if selected_impl == "Binary":
+            self.cross_methods = self.binary_cross_methods
+            self.mutation_methods = self.binary_mutation_methods
+        else:
             self.cross_methods = self.real_cross_methods
             self.mutation_methods = self.real_mutation_methods
 
