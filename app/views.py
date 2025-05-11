@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from config import config
+from app.config import config
 from algorithm.genetic import run_genetic_algorithm
 import os
 
@@ -13,6 +13,7 @@ class Singleton:
             cls._instance = super(Singleton, cls).__new__(cls, *args, **kwargs)
         return cls._instance
 
+
 class MainWindow(Singleton):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -22,8 +23,8 @@ class MainWindow(Singleton):
 
         self.chromosome_implementation = ["Real", "Binary"]
         self.selection_methods = ["Best", "Roulette", "Tournament"]
-        self.binary_cross_methods = ["single_point", "Two_point", "Uniform"]
-        self.binary_mutation_methods = ["single_point", "Two_point", "Edge"]
+        self.binary_cross_methods = ["single_point", "two_point", "uniform"]
+        self.binary_mutation_methods = ["single_point", "two_point", "edge", "random", "swap", "inversion"]
         self.real_cross_methods = ["arithmetic", "linear", "blend_alpha", "blend_alpha_beta", "averaging"]
         self.real_mutation_methods = ["uniform", "gaussian"]
 
@@ -53,12 +54,10 @@ class MainWindow(Singleton):
         self.chr_impl_var = tk.StringVar()
         self.chr_impl_combo = ttk.Combobox(row_chr_impl, textvariable=self.chr_impl_var)
         self.chr_impl_combo['values'] = self.chromosome_implementation
-        self.chr_impl_combo.set("Real")
+        self.chr_impl_combo.set("Real" if config.chromosome_representation == "real" else "Binary")
         self.chr_impl_combo.pack(side="left")
 
         self.chr_impl_combo.bind("<<ComboboxSelected>>", self.update_cross_mutation_methods)
-
-
 
         row1 = tk.Frame(main_column)
         row1.pack(fill="x")
@@ -164,26 +163,29 @@ class MainWindow(Singleton):
         self.maximization_checkbox = tk.Checkbutton(row13, variable=self.maximization_var)
         self.maximization_checkbox.pack(side="left")
 
-
         self.start_button = tk.Button(main_column, text="Start", command=self.run_algorithm)
         self.start_button.pack(fill="x")
+
+        # Initialize crossover and mutation methods based on current representation
+        self.update_cross_mutation_methods()
 
     def update_cross_mutation_methods(self, event=None):
         selected_impl = self.chr_impl_var.get()
 
         if selected_impl == "Binary":
-            self.cross_methods = self.binary_cross_methods
-            self.mutation_methods = self.binary_mutation_methods
+            self.cross_method_combo['values'] = self.binary_cross_methods
+            self.mutation_method_combo['values'] = self.binary_mutation_methods
+            if self.cross_method_var.get() not in self.binary_cross_methods:
+                self.cross_method_var.set(self.binary_cross_methods[0])
+            if self.mutation_method_var.get() not in self.binary_mutation_methods:
+                self.mutation_method_var.set(self.binary_mutation_methods[0])
         else:
-            self.cross_methods = self.real_cross_methods
-            self.mutation_methods = self.real_mutation_methods
-
-        self.cross_method_combo['values'] = self.cross_methods
-        self.mutation_method_combo['values'] = self.mutation_methods
-
-        self.cross_method_var.set(self.cross_methods[0])
-        self.mutation_method_var.set(self.mutation_methods[0])
-
+            self.cross_method_combo['values'] = self.real_cross_methods
+            self.mutation_method_combo['values'] = self.real_mutation_methods
+            if self.cross_method_var.get() not in self.real_cross_methods:
+                self.cross_method_var.set(self.real_cross_methods[0])
+            if self.mutation_method_var.get() not in self.real_mutation_methods:
+                self.mutation_method_var.set(self.real_mutation_methods[0])
 
     def save_results_to_file(self, results):
         folder = "results"
@@ -191,11 +193,10 @@ class MainWindow(Singleton):
         file_path = os.path.join(folder, "wyniki.txt")
         try:
             with open(file_path, 'a', encoding='utf-8') as file:
-                file.write(results + "\n" + "="*50 + "\n")
+                file.write(results + "\n" + "=" * 50 + "\n")
             print(f"Wyniki dopisano do: {file_path}")
         except Exception as e:
             print(f"Błąd podczas zapisu: {str(e)}")
-
 
     def run_algorithm(self):
         try:
@@ -214,15 +215,15 @@ class MainWindow(Singleton):
             config.mutation_method = self.mutation_method_var.get().lower()
             config.mutation_probability = float(self.mutation_propability_entry.get())
             config.optimization_type = "max" if self.maximization_var.get() else "min"
-            
+
             best_solution, execution_time, plotter = run_genetic_algorithm()
-            
+
             results = f"Najlepsze rozwiązanie: {best_solution.chromosome_values}\nWartość funkcji celu: {best_solution.fitness}\nCzas wykonania: {execution_time} sekund\n"
 
             self.save_results_to_file(results)
 
             plotter.show_results_window(best_solution, execution_time)
-            
+
         except Exception as e:
             print(f"Błąd: {str(e)}")
             import traceback

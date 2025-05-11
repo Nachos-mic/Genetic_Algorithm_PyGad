@@ -1,6 +1,6 @@
 import random
 import numpy
-
+from algorithm.chromosome_binary import BinaryChromosome
 
 def edge_mutation_binary(chromosome, probability=1):
     if random.random() <= probability:
@@ -54,6 +54,26 @@ def custom_uniform_mutation(offspring, ga_instance):
 
     return offspring
 
+def custom_single_point_mutation_binary(offspring, ga_instance):
+    for idx in range(offspring.shape[0]):
+        chrom = BinaryChromosome(list(offspring[idx]))
+        mutated = single_point_mutation_binary(chrom)
+        offspring[idx] = mutated.chromosome
+    return offspring
+
+def custom_edge_mutation_binary(offspring, ga_instance):
+    for idx in range(offspring.shape[0]):
+        chrom = BinaryChromosome(list(offspring[idx]))
+        mutated = edge_mutation_binary(chrom)
+        offspring[idx] = mutated.chromosome
+    return offspring
+
+def custom_two_point_mutation_binary(offspring, ga_instance):
+    for idx in range(offspring.shape[0]):
+        chrom = BinaryChromosome(list(offspring[idx]))
+        mutated = two_point_mutation_binary(chrom)
+        offspring[idx] = mutated.chromosome
+    return offspring
 
 def custom_gaussian_mutation(offspring, ga_instance):
 
